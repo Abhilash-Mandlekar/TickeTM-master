@@ -11,7 +11,7 @@
         android:id="@+id/result_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/no_barcode_captured"
+        android:text="Active tickets to be displayed here."
         android:textSize="22sp"
         android:freezesText="true"
         android:layout_centerVertical="true"
@@ -22,8 +22,10 @@
         android:id="@+id/scan_barcode_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/scan_barcode_button"
-        android:layout_below="@id/result_textview"
-        android:background="@color/colorAccent"
-        android:textColor="@color/colorWhite" />
+        android:text="Scan QR Code"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorWhite"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="22dp" />
 </RelativeLayout>

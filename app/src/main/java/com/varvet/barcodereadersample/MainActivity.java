@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private String amount;
     private String validity;
     private TextView mResultTextView;
-    ImageView imageView = (ImageView)findViewById(R.id.imageView);
+
     Bitmap bitmap ;
 
     public final static int QRcodeWidth = 500 ;
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        setContentView(R.layout.ticket_desc_pay);
         TextView tv_service = (TextView) findViewById(R.id.tv_service);
         TextView tv_accno = (TextView) findViewById(R.id.tv_accno);
         TextView tv_amt = (TextView) findViewById(R.id.tv_amt);
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == BARCODE_READER_REQUEST_CODE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    setContentView(R.layout.ticket_desc_pay);
+
 
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     Point[] p = barcode.cornerPoints;
@@ -84,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
                     amount = qr_code_data_parameters[2];
                     validity = qr_code_data_parameters[3];
 
-                    tv_service.setText(service);
-                    tv_accno.setText(account_no);
-                    tv_amt.setText(amount);
-                    tv_validity.setText(validity);
+                    tv_service.setText(" Service Name                   : "+service);
+                    tv_accno.setText(  " Account Number                 : "+account_no);
+                    tv_amt.setText(    " Amount of Ticket (in Rs)       : " + amount);
+                    tv_validity.setText(" Validity of Ticket (in hrs)    : " + validity);
                     btn_pay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 try {
                                     bitmap = TextToImageEncode(encode_ticket);
-
+                                    ImageView imageView = (ImageView)findViewById(R.id.imageView);
                                     imageView.setImageBitmap(bitmap);
 
                                 } catch (WriterException e) {
@@ -110,14 +111,11 @@ public class MainActivity extends AppCompatActivity {
                     });
                    // mResultTextView.setText(barcode.displayValue);
 
-                } else mResultTextView.setText(R.string.no_barcode_captured);
+                } else setContentView(R.layout.activity_main);
             } else Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format),
                     CommonStatusCodes.getStatusCodeString(resultCode)));
         } else super.onActivityResult(requestCode, resultCode, data);
     }
-
-
-
 
 
     Bitmap TextToImageEncode(String Value) throws WriterException {
