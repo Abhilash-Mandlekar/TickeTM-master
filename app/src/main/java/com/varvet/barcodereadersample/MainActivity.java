@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private String amount;
     private String validity;
     private TextView mResultTextView;
-    private int vcs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
