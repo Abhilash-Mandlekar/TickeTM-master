@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     public final static int QRcodeWidth = 500 ;
     private boolean paymentSuccessful= true;
 
-    private String git_test;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
