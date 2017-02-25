@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private String amount;
     private String validity;
     private TextView mResultTextView;
-
+    private String git_test;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
