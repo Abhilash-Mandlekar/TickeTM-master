@@ -39,4 +39,12 @@
         android:id="@+id/btn_pay"
         android:layout_weight="0.06"
         android:background="@color/colorPrimary"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/button"
+        />
 </LinearLayout>
