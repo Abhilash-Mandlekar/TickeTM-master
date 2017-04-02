@@ -148,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
 
+                            Intent pay_intent = new Intent(MainActivity.this, MerchantActivity.class);
+                            MainActivity.this.startActivity(pay_intent);
+
 
                             if (paymentSuccessful) {
                                 String encode_ticket = service + "&&" + account_no + "&&" + amount + "&&" + validity + "&&" + transaction_id + "&&" + timeStamp;
