@@ -70,7 +70,7 @@ public class MerchantActivity extends Activity {
 		paramMap.put("TXN_AMOUNT", amount);
 
 		paramMap.put("THEME", "merchant");
-		paramMap.put("EMAIL", "abhilash@gmail.com");
+		paramMap.put("EMAIL", "abhi@gmail.com");
 		paramMap.put("MOBILE_NO","123");
 		PaytmOrder Order = new PaytmOrder(paramMap);
 
