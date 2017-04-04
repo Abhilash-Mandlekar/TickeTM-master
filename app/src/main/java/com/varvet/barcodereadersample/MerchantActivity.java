@@ -42,29 +42,35 @@ public class MerchantActivity extends Activity {
 	}
 	
 
-	private void initOrderId() {
+	 void initOrderId() {
 		Random r = new Random(System.currentTimeMillis());
-		String orderId = "ORDER" + (1 + r.nextInt(2)) * 10000
+		String orderId = "ORDERDD" + (1 + r.nextInt(2)) * 10000
 				+ r.nextInt(10000);
 		EditText orderIdEditText = (EditText) findViewById(R.id.order_id);
 		orderIdEditText.setText(orderId);
 	}
 
-	public void onStartTransaction(View view) {
+	public void onStartTransaction(String amount) {//VIEW PARAMETER REMOVED
 		PaytmPGService Service = PaytmPGService.getStagingService();
 		Map<String, String> paramMap = new HashMap<String, String>();
 
 		// these are mandatory parameters
-		
-		paramMap.put("ORDER_ID", ((EditText) findViewById(R.id.order_id)).getText().toString());
+		Random r = new Random(System.currentTimeMillis());
+		String orderId = "ORDERDD" + (1 + r.nextInt(2)) * 10000
+				+ r.nextInt(10000);
+
+
+		paramMap.put("ORDER_ID", orderId);
 		paramMap.put("MID", ((EditText) findViewById(R.id.merchant_id)).getText().toString());
 		paramMap.put("CUST_ID", ((EditText) findViewById(R.id.customer_id)).getText().toString());
 		paramMap.put("CHANNEL_ID", ((EditText) findViewById(R.id.channel_id)).getText().toString());
 		paramMap.put("INDUSTRY_TYPE_ID", ((EditText) findViewById(R.id.industry_type_id)).getText().toString());
 		paramMap.put("WEBSITE", ((EditText) findViewById(R.id.website)).getText().toString());
-		paramMap.put("TXN_AMOUNT", ((EditText) findViewById(R.id.transaction_amount)).getText().toString());
+		//paramMap.put("TXN_AMOUNT", ((EditText) findViewById(R.id.transaction_amount)).getText().toString());
+		paramMap.put("TXN_AMOUNT", amount);
+
 		paramMap.put("THEME", ((EditText) findViewById(R.id.theme)).getText().toString());
-		paramMap.put("EMAIL", ((EditText) findViewById(R.id.cust_email_id)).getText().toString());
+		paramMap.put("EMAIL", "abc@gmail.com");
 		paramMap.put("MOBILE_NO", ((EditText) findViewById(R.id.cust_mobile_no)).getText().toString());
 		PaytmOrder Order = new PaytmOrder(paramMap);
 

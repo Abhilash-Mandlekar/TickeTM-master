@@ -148,6 +148,10 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
 
+                            MerchantActivity mMerchantActivity = new MerchantActivity();
+                            mMerchantActivity.onStart();
+                            mMerchantActivity.onStartTransaction(amount);
+
                             Intent pay_intent = new Intent(MainActivity.this, MerchantActivity.class);
                             MainActivity.this.startActivity(pay_intent);
 
