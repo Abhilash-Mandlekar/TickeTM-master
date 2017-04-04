@@ -61,15 +61,15 @@ public class MerchantActivity extends Activity {
 
 
 		paramMap.put("ORDER_ID", orderId);
-		paramMap.put("MID", ((EditText) findViewById(R.id.merchant_id)).getText().toString());
-		paramMap.put("CUST_ID", ((EditText) findViewById(R.id.customer_id)).getText().toString());
-		paramMap.put("CHANNEL_ID", ((EditText) findViewById(R.id.channel_id)).getText().toString());
-		paramMap.put("INDUSTRY_TYPE_ID", ((EditText) findViewById(R.id.industry_type_id)).getText().toString());
-		paramMap.put("WEBSITE", ((EditText) findViewById(R.id.website)).getText().toString());
+		paramMap.put("MID", "WorldP64425807474247");
+		paramMap.put("CUST_ID", "CUST23657");
+		paramMap.put("CHANNEL_ID", "WAP");
+		paramMap.put("INDUSTRY_TYPE_ID", "Retail");
+		paramMap.put("WEBSITE", "worldpressplg");
 		//paramMap.put("TXN_AMOUNT", ((EditText) findViewById(R.id.transaction_amount)).getText().toString());
 		paramMap.put("TXN_AMOUNT", amount);
 
-		paramMap.put("THEME", ((EditText) findViewById(R.id.theme)).getText().toString());
+		paramMap.put("THEME", "merchant");
 		paramMap.put("EMAIL", "abc@gmail.com");
 		paramMap.put("MOBILE_NO","123");
 		PaytmOrder Order = new PaytmOrder(paramMap);

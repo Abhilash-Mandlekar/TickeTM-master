@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                     tv_accno.setText(" Account Number                 : " + account_no);
                     tv_amt.setText(" Amount of Ticket (in Rs)       : " + amount);
                     tv_validity.setText(" Validity of Ticket (in hrs)    : " + validity);
+
+                    //button onclick
                     btn_pay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
