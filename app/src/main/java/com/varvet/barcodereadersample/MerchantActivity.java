@@ -71,7 +71,7 @@ public class MerchantActivity extends Activity {
 
 		paramMap.put("THEME", ((EditText) findViewById(R.id.theme)).getText().toString());
 		paramMap.put("EMAIL", "abc@gmail.com");
-		paramMap.put("MOBILE_NO", ((EditText) findViewById(R.id.cust_mobile_no)).getText().toString());
+		paramMap.put("MOBILE_NO","123");
 		PaytmOrder Order = new PaytmOrder(paramMap);
 
 		PaytmMerchant Merchant = new PaytmMerchant(
