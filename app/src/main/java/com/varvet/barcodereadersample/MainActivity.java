@@ -45,11 +45,15 @@ public class MainActivity extends AppCompatActivity {
     private String amount;
     private String validity;
     private TextView mResultTextView;
+    public static String date;
+    public static String txnID;
+    public static String responseCode;
+    public static String responseMSG;
 
     Bitmap bitmap;
 
     public final static int QRcodeWidth = 500;
-    private boolean paymentSuccessful = true;
+    private boolean paymentSuccessful = false;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -158,8 +162,13 @@ public class MainActivity extends AppCompatActivity {
                             MainActivity.this.startActivity(pay_intent);
 
 
+                            if(responseCode.equals("01")&&responseMSG.equals("Txn Successful."))
+                                paymentSuccessful = true;
+                            Log.e("responseCode: ",responseCode);
+                            Log.e("responseMSG: ",responseMSG);
+
                             if (paymentSuccessful) {
-                                String encode_ticket = service + "&&" + account_no + "&&" + amount + "&&" + validity + "&&" + transaction_id + "&&" + timeStamp;
+                                String encode_ticket = service + "&&" + account_no + "&&" + amount + "&&" + validity + "&&" + txnID + "&&" + timeStamp;
 
                                 try {
                                     bitmap = TextToImageEncode(encode_ticket);

@@ -18,6 +18,8 @@ import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 
+import static com.varvet.barcodereadersample.MainActivity.date;
+
 /**
  * This is the sample app which will make use of the PG SDK. This activity will
  * show the usage of Paytm PG SDK API's.
@@ -98,6 +100,10 @@ public class MerchantActivity extends Activity {
 						// parameters.
 						Log.d("LOG", "Payment Transaction is successful " + inResponse);
 						Toast.makeText(getApplicationContext(), "Payment Transaction is successful ", Toast.LENGTH_LONG).show();
+								MainActivity.date = inResponse.getString("TXNDATE");
+								MainActivity.responseCode = inResponse.getString("RESPCODE");
+								MainActivity.responseMSG = inResponse.getString("RESPMSG");
+								MainActivity.txnID = inResponse.getString("TXNID");
 					}
 
 					@Override
