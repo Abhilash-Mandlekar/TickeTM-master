@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,9 +51,10 @@ public class MerchantActivity extends Activity {
 				+ r.nextInt(10000);
 		EditText orderIdEditText = (EditText) findViewById(R.id.order_id);
 		orderIdEditText.setText(orderId);
+		 //onStartTransaction(new View(this));
 	}
 
-	public void onStartTransaction(String amount) {//VIEW PARAMETER REMOVED
+	public void onStartTransaction(View view) {//VIEW PARAMETER REMOVED    CANT CHANGE
 		PaytmPGService Service = PaytmPGService.getStagingService();
 		Map<String, String> paramMap = new HashMap<String, String>();
 
@@ -69,7 +71,7 @@ public class MerchantActivity extends Activity {
 		paramMap.put("INDUSTRY_TYPE_ID", "Retail");
 		paramMap.put("WEBSITE", "worldpressplg");
 		//paramMap.put("TXN_AMOUNT", ((EditText) findViewById(R.id.transaction_amount)).getText().toString());
-		paramMap.put("TXN_AMOUNT", amount);
+		paramMap.put("TXN_AMOUNT", "10");
 
 		paramMap.put("THEME", "merchant");
 		paramMap.put("EMAIL", "abhi@gmail.com");
@@ -104,6 +106,16 @@ public class MerchantActivity extends Activity {
 								MainActivity.responseCode = inResponse.getString("RESPCODE");
 								MainActivity.responseMSG = inResponse.getString("RESPMSG");
 								MainActivity.txnID = inResponse.getString("TXNID");
+
+
+						//resume ticket generating activity
+						//INSTEAD GO TOT FRONT PAGE , ADDING TICKET IN LIST
+						Intent openMainActivity= new Intent(MerchantActivity.this, MainActivity.class);//(from , to)
+						//openMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+						openMainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						Log.e("Servicename: ",MainActivity.service);
+						startActivity(openMainActivity);
+
 					}
 
 					@Override

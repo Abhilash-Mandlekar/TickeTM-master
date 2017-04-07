@@ -9,8 +9,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,8 @@ import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.varvet.barcodereadersample.barcode.BarcodeCaptureActivity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +48,13 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 
 public class MainActivity extends AppCompatActivity {
+    private ListView mainListView ;
+    private ArrayAdapter<String> listAdapter ;
+
+
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int BARCODE_READER_REQUEST_CODE = 1;
-    private String service;
+    public static String service;
     private String account_no;
     private String amount;
     private String validity;
@@ -70,6 +78,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //------------------------ LIST VIEW--------------------------------------------------
+
+
+        // Find the ListView resource.
+        mainListView = (ListView) findViewById( R.id.mainListView );
+
+        // Create and populate a List of planet names.
+        String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
+                "Jupiter", "Saturn", "Uranus", "Neptune"};
+        ArrayList<String> planetList = new ArrayList<String>();
+        planetList.addAll( Arrays.asList(planets) );
+
+        // Create ArrayAdapter using the planet list.
+        listAdapter = new ArrayAdapter<String>(this, R.layout.row_content, planetList);
+
+        // Add more planets. If you passed a String[] instead of a List<String>
+        // into the ArrayAdapter constructor, you must not add more items.
+        // Otherwise an exception will occur.
+        listAdapter.add( "Ceres" );
+        listAdapter.add( "Pluto" );
+        listAdapter.add( "Haumea" );
+        listAdapter.add( "Makemake" );
+        listAdapter.add( "Eris" );
+
+        // Set the ArrayAdapter as the ListView's adapter.
+        mainListView.setAdapter( listAdapter );
+        //------------------------ LIST VIEW--------------------------------------------------
+
 
         mResultTextView = (TextView) findViewById(R.id.result_textview);
 
@@ -168,10 +206,12 @@ public class MainActivity extends AppCompatActivity {
                             MainActivity.this.startActivity(pay_intent);
 
 
-                            if(responseCode.equals("01")&&responseMSG.equals("Txn Successful."))
-                                paymentSuccessful = true;
-                            Log.e("responseCode: ",responseCode);
-                            Log.e("responseMSG: ",responseMSG);
+//                            if(responseCode.equals("01")&&responseMSG.equals("Txn Successful."))
+//                                paymentSuccessful = true;
+//                            Log.e("responseCode: ",responseCode);
+//                            Log.e("responseMSG: ",responseMSG);
+
+                            // to be done in front list
 
                             if (paymentSuccessful) {
                                 String encode_ticket = service + "&&" + account_no + "&&" + amount + "&&" + validity + "&&" + txnID + "&&" + timeStamp;
@@ -256,6 +296,13 @@ public class MainActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
+
+
+
+        if(service!=null)
+        {
+            listAdapter.add( service );
+        }
     }
 
     @Override
@@ -372,4 +419,9 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Toast.makeText(this,"restarted",Toast.LENGTH_SHORT).show();
+    }
 }
