@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,20 +48,39 @@ import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 import com.amazonaws.services.dynamodbv2.model.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     private ListView mainListView ;
     private ArrayAdapter<String> listAdapter ;
+
+    ListView lview;
+    ListViewAdapter lviewAdapter;
+
+    private final static String month[] = {"January","February","March","April","May",
+            "June","July","August","September","October","November","December"};
+
+    private final static String number[] = {"Month - 1", "Month - 2","Month - 3",
+            "Month - 4","Month - 5","Month - 6",
+            "Month - 7","Month - 8","Month - 9",
+            "Month - 10","Month - 11","Month - 12"};
+
+
 
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int BARCODE_READER_REQUEST_CODE = 1;
+
+
+    //BARCODE DATA
     public static String service;
-    private String account_no;
-    private String amount;
-    private String validity;
+    public static String account_no;
+    public static String amount;
+    public static String validity;
+    public  static String txnID;
+    public  static String timeStamp;
+
+
     private TextView mResultTextView;
     public static String date;
-    public static String txnID;
     public static String responseCode;
     public static String responseMSG;
 
@@ -83,30 +103,46 @@ public class MainActivity extends AppCompatActivity {
         //------------------------ LIST VIEW--------------------------------------------------
 
 
-        // Find the ListView resource.
-        mainListView = (ListView) findViewById( R.id.mainListView );
-
-        // Create and populate a List of planet names.
-        String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
-                "Jupiter", "Saturn", "Uranus", "Neptune"};
-        ArrayList<String> planetList = new ArrayList<String>();
-        planetList.addAll( Arrays.asList(planets) );
-
-        // Create ArrayAdapter using the planet list.
-        listAdapter = new ArrayAdapter<String>(this, R.layout.row_content, planetList);
-
-        // Add more planets. If you passed a String[] instead of a List<String>
-        // into the ArrayAdapter constructor, you must not add more items.
-        // Otherwise an exception will occur.
-        listAdapter.add( "Ceres" );
-        listAdapter.add( "Pluto" );
-        listAdapter.add( "Haumea" );
-        listAdapter.add( "Makemake" );
-        listAdapter.add( "Eris" );
-
-        // Set the ArrayAdapter as the ListView's adapter.
-        mainListView.setAdapter( listAdapter );
+//        // Find the ListView resource.
+//        mainListView = (ListView) findViewById( R.id.mainListView );
+//
+//        // Create and populate a List of planet names.
+//        String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
+//                "Jupiter", "Saturn", "Uranus", "Neptune"};
+//        ArrayList<String> planetList = new ArrayList<String>();
+//        planetList.addAll( Arrays.asList(planets) );
+//
+//        // Create ArrayAdapter using the planet list.
+//        listAdapter = new ArrayAdapter<String>(this, R.layout.row_content, planetList);
+//
+//        // Add more planets. If you passed a String[] instead of a List<String>
+//        // into the ArrayAdapter constructor, you must not add more items.
+//        // Otherwise an exception will occur.
+//        listAdapter.add( "Ceres" );
+//        listAdapter.add( "Pluto" );
+//        listAdapter.add( "Haumea" );
+//        listAdapter.add( "Makemake" );
+//        listAdapter.add( "Eris" );
+//
+//        // Set the ArrayAdapter as the ListView's adapter.
+//        mainListView.setAdapter( listAdapter );
         //------------------------ LIST VIEW--------------------------------------------------
+
+        //------------------------ LIST VIEW2--------------------------------------------------
+
+        lview = (ListView) findViewById(R.id.mainListView);
+        lviewAdapter = new ListViewAdapter(this, month, number);
+
+        System.out.println("adapter => "+lviewAdapter.getCount());
+
+        lview.setAdapter(lviewAdapter);
+
+        lview.setOnItemClickListener(this);
+
+
+//------------------------ LIST VIEW 2--------------------------------------------------
+
+
 
 
         mResultTextView = (TextView) findViewById(R.id.result_textview);
@@ -136,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
         int max = 999999;
 
         final int transaction_id = new Random().nextInt(max - min + 1) + min;
-        final String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        final String ts = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        timeStamp=ts;
 
         Runnable runnable = new Runnable() {
             public void run() {
@@ -423,5 +460,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         Toast.makeText(this,"restarted",Toast.LENGTH_SHORT).show();
+    }
+
+    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
+        // TODO Auto-generated method stub
+        Toast.makeText(this,"Title => "+month[position]+"=> n Description"+number[position], Toast.LENGTH_SHORT).show();
     }
 }
