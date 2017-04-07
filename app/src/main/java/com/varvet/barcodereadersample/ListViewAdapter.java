@@ -7,22 +7,37 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ListViewAdapter extends BaseAdapter
 {
     Activity context;
-    String title[];
-    String description[];
+    ArrayList<String> title;
+    ArrayList<String> description;
 
-    public ListViewAdapter(Activity context, String[] title, String[] description) {
+    public ListViewAdapter(Activity context, ArrayList<String> title, ArrayList<String> description) {
         super();
         this.context = context;
         this.title = title;
         this.description = description;
     }
+   //new added
+    public boolean add(String title,String description){
+        this.title.add(title);
+        this.description.add(description);
+        return true;
+    }
+    //new added
+    public boolean clear()
+    {
+        title.clear();
+        description.clear();
+        return true;
+    }
 
     public int getCount() {
         // TODO Auto-generated method stub
-        return title.length;
+        return title.size();
     }
 
     public Object getItem(int position) {
@@ -59,8 +74,8 @@ public class ListViewAdapter extends BaseAdapter
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txtViewTitle.setText(title[position]);
-        holder.txtViewDescription.setText(description[position]);
+        holder.txtViewTitle.setText(title.get(position));
+        holder.txtViewDescription.setText(description.get(position));
 
         return convertView;
     }

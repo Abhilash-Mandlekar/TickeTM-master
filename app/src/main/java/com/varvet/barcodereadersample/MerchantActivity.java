@@ -6,6 +6,7 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -107,13 +108,23 @@ public class MerchantActivity extends Activity {
 								MainActivity.responseMSG = inResponse.getString("RESPMSG");
 								MainActivity.txnID = inResponse.getString("TXNID");
 
+						SharedPreferences.Editor editor = getSharedPreferences("TICKETMSP", MODE_PRIVATE).edit();
+						String key = MainActivity.service + "&&" + MainActivity.account_no + "&&" +
+								MainActivity.amount + "&&" + MainActivity.validity + "&&" + MainActivity.txnID + "&&" + MainActivity.timeStamp;
 
+						String value=MainActivity.service;
+
+						editor.putString(key,value);
+						editor.commit();
 						//resume ticket generating activity
 						//INSTEAD GO TOT FRONT PAGE , ADDING TICKET IN LIST
 						Intent openMainActivity= new Intent(MerchantActivity.this, MainActivity.class);//(from , to)
 						//openMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 						openMainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 						Log.e("Servicename: ",MainActivity.service);
+
+
+
 						startActivity(openMainActivity);
 
 					}

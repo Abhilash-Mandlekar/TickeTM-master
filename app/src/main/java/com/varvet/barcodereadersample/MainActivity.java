@@ -1,6 +1,7 @@
 package com.varvet.barcodereadersample;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.Uri;
@@ -29,24 +30,17 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.paytm.pgsdk.PaytmMerchant;
-import com.paytm.pgsdk.PaytmOrder;
-import com.paytm.pgsdk.PaytmPGService;
-import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.varvet.barcodereadersample.barcode.BarcodeCaptureActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
-import com.amazonaws.services.dynamodbv2.model.*;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     private ListView mainListView ;
@@ -63,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             "Month - 7","Month - 8","Month - 9",
             "Month - 10","Month - 11","Month - 12"};
 
-
+    private final static ArrayList<String> lTitle = new ArrayList<String>();
+    private final static ArrayList<String> lDescription = new ArrayList<String>();
 
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -130,11 +125,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //------------------------ LIST VIEW2--------------------------------------------------
 
+        Log.e("onCreate"," --------------------------------->>>>>>>>>>>>>>>>>>>>    called");
+//        for(String s : month)
+//        {
+//            lTitle.add(s);
+//        }
+//        for(String s : number)
+//        {
+//            lDescription.add(s);
+//        }
+
+        SharedPreferences prefs = getSharedPreferences("TICKETMSP", MODE_PRIVATE);
+        HashMap<String,String> h = (HashMap<String, String>) prefs.getAll();
+
+
         lview = (ListView) findViewById(R.id.mainListView);
-        lviewAdapter = new ListViewAdapter(this, month, number);
+        //lviewAdapter = new ListViewAdapter(this, month, number);
+        lviewAdapter = new ListViewAdapter(this, lTitle, lDescription);
 
         System.out.println("adapter => "+lviewAdapter.getCount());
 
+        lviewAdapter.clear();           //to avoid repeated insert in list
+        for(String key : h.keySet())
+        {
+            String title = h.get(key);
+            lviewAdapter.add(title,key);
+        }
         lview.setAdapter(lviewAdapter);
 
         lview.setOnItemClickListener(this);
@@ -242,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             Intent pay_intent = new Intent(MainActivity.this, MerchantActivity.class);
                             MainActivity.this.startActivity(pay_intent);
 
-
+                        //--------------------------------dead code------------------------------
 //                            if(responseCode.equals("01")&&responseMSG.equals("Txn Successful."))
 //                                paymentSuccessful = true;
 //                            Log.e("responseCode: ",responseCode);
@@ -263,6 +279,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 }
 
                             }
+
+                            //--------------------------------dead code------------------------------
+
                         }
                     });
                     // mResultTextView.setText(barcode.displayValue);
@@ -333,13 +352,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
-
-
-
-        if(service!=null)
-        {
-            listAdapter.add( service );
-        }
     }
 
     @Override
@@ -352,118 +364,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         client.disconnect();
     }
 
-
-
-    //-------------------------------------------------------------------------------------------------------------------------
-
-//
-//    public void onStartTransaction(String amount) {//VIEW PARAMETER REMOVED
-//        PaytmPGService Service = PaytmPGService.getStagingService();
-//        Map<String, String> paramMap = new HashMap<String, String>();
-//
-//        // these are mandatory parameters
-//        Random r = new Random(System.currentTimeMillis());
-//        String orderId = "ORDERDD" + (1 + r.nextInt(2)) * 10000
-//                + r.nextInt(10000);
-//
-//
-//        paramMap.put("ORDER_ID", orderId);
-//        paramMap.put("MID", "WorldP64425807474247");
-//        paramMap.put("CUST_ID", "CUST23657");
-//        paramMap.put("CHANNEL_ID", "WAP");
-//        paramMap.put("INDUSTRY_TYPE_ID", "Retail");
-//        paramMap.put("WEBSITE", "worldpressplg");
-//        //paramMap.put("TXN_AMOUNT", ((EditText) findViewById(R.id.transaction_amount)).getText().toString());
-//        paramMap.put("TXN_AMOUNT", amount);
-//
-//        paramMap.put("THEME", "merchant");
-//        paramMap.put("EMAIL", "abhi@gmail.com");
-//        paramMap.put("MOBILE_NO","123");
-//        PaytmOrder Order = new PaytmOrder(paramMap);
-//
-//        PaytmMerchant Merchant = new PaytmMerchant(
-//                "https://pguat.paytm.com/paytmchecksum/paytmCheckSumGenerator.jsp",
-//                "https://pguat.paytm.com/paytmchecksum/paytmCheckSumVerify.jsp");
-//
-//        Service.initialize(Order, Merchant, null);
-//
-//        Service.startPaymentTransaction(this, true, true,
-//                new PaytmPaymentTransactionCallback() {
-//                    @Override
-//                    public void someUIErrorOccurred(String inErrorMessage) {
-//                        // Some UI Error Occurred in Payment Gateway Activity.
-//                        // // This may be due to initialization of views in
-//                        // Payment Gateway Activity or may be due to //
-//                        // initialization of webview. // Error Message details
-//                        // the error occurred.
-//                    }
-//
-//                    @Override
-//                    public void onTransactionSuccess(Bundle inResponse) {
-//                        // After successful transaction this method gets called.
-//                        // // Response bundle contains the merchant response
-//                        // parameters.
-//                        Log.d("LOG", "Payment Transaction is successful " + inResponse);
-//                        Toast.makeText(getApplicationContext(), "Payment Transaction is successful ", Toast.LENGTH_LONG).show();
-//                        MainActivity.date = inResponse.getString("TXNDATE");
-//                        MainActivity.responseCode = inResponse.getString("RESPCODE");
-//                        MainActivity.responseMSG = inResponse.getString("RESPMSG");
-//                        MainActivity.txnID = inResponse.getString("TXNID");
-//                    }
-//
-//                    @Override
-//                    public void onTransactionFailure(String inErrorMessage,
-//                                                     Bundle inResponse) {
-//                        // This method gets called if transaction failed. //
-//                        // Here in this case transaction is completed, but with
-//                        // a failure. // Error Message describes the reason for
-//                        // failure. // Response bundle contains the merchant
-//                        // response parameters.
-//                        Log.d("LOG", "Payment Transaction Failed " + inErrorMessage);
-//                        Toast.makeText(getBaseContext(), "Payment Transaction Failed ", Toast.LENGTH_LONG).show();
-//                    }
-//
-//                    @Override
-//                    public void networkNotAvailable() { // If network is not
-//                        // available, then this
-//                        // method gets called.
-//                    }
-//
-//                    @Override
-//                    public void clientAuthenticationFailed(String inErrorMessage) {
-//                        // This method gets called if client authentication
-//                        // failed. // Failure may be due to following reasons //
-//                        // 1. Server error or downtime. // 2. Server unable to
-//                        // generate checksum or checksum response is not in
-//                        // proper format. // 3. Server failed to authenticate
-//                        // that client. That is value of payt_STATUS is 2. //
-//                        // Error Message describes the reason for failure.
-//                    }
-//
-//                    @Override
-//                    public void onErrorLoadingWebPage(int iniErrorCode,
-//                                                      String inErrorMessage, String inFailingUrl) {
-//
-//                    }
-//
-//                    // had to be added: NOTE
-//                    @Override
-//                    public void onBackPressedCancelTransaction() {
-//                        // TODO Auto-generated method stub
-//                    }
-//
-//                });
-//    }
-
-
     @Override
     protected void onRestart() {
         super.onRestart();
-        Toast.makeText(this,"restarted",Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this,"restarted",Toast.LENGTH_SHORT).show();
     }
 
     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
         // TODO Auto-generated method stub
-        Toast.makeText(this,"Title => "+month[position]+"=> n Description"+number[position], Toast.LENGTH_SHORT).show();
+        TextView tv  =(TextView)arg1.findViewById(R.id.tv2);    // qrcode reciept data
+        Log.e("tv2"," ---------> "+tv.getText());
+
+
+        String encode_ticket = tv.getText().toString();
+
+        try {
+            bitmap = TextToImageEncode(encode_ticket);
+            ImageView imageView = (ImageView) findViewById(R.id.imageView);
+            imageView.setImageBitmap(bitmap);
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }Toast.makeText(this,tv.getText(),Toast.LENGTH_LONG);
+
+
     }
 }
