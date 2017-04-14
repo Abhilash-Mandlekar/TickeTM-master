@@ -14,6 +14,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.paytm.pgsdk.PaytmClientCertificate;
 import com.paytm.pgsdk.PaytmMerchant;
 import com.paytm.pgsdk.PaytmOrder;
@@ -21,6 +27,9 @@ import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 
 import static com.varvet.barcodereadersample.MainActivity.date;
+import static com.varvet.barcodereadersample.MainActivity.timeStamp;
+import static com.varvet.barcodereadersample.MainActivity.txnID;
+import static com.varvet.barcodereadersample.MainActivity.validity;
 
 /**
  * This is the sample app which will make use of the PG SDK. This activity will
@@ -123,6 +132,7 @@ public class MerchantActivity extends Activity {
 						openMainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 						Log.e("Servicename: ",MainActivity.service);
 
+						addTicketToAWS();
 
 
 						startActivity(openMainActivity);
@@ -171,5 +181,46 @@ public class MerchantActivity extends Activity {
 					}
 
 				});
+
+
+	}
+	public void addTicketToAWS()
+	{
+		Runnable runnable = new Runnable() {
+			public void run() {
+				//DynamoDB calls go here
+				CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+						getApplicationContext(),
+						"us-west-2:6a90e3bc-32d9-4eb3-83c1-0d19aa5906fa", // Identity Pool ID
+						Regions.US_WEST_2 // Region
+				);
+
+
+				AmazonDynamoDBClient ddbClient = Region.getRegion(Regions.US_WEST_2) // CRUCIAL
+
+						.createClient(
+								AmazonDynamoDBClient.class,
+								credentialsProvider,
+								new ClientConfiguration()
+						);
+
+				DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+
+				TicketDetailsDb tkt = new TicketDetailsDb();
+				String trans_id = txnID + "";
+				tkt.setTrans_id(trans_id);
+				tkt.setTime_stamp(timeStamp);
+				tkt.setValidity(Integer.parseInt(validity));
+				tkt.setPenalty(121212);
+
+				mapper.save(tkt);
+			}
+		};
+
+
+		Thread mythread = new Thread(runnable);
+		mythread.start();
+		Log.e("Database status: ","succesfully entered");
+
 	}
 }

@@ -191,41 +191,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final String ts = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
         timeStamp=ts;
 
-        Runnable runnable = new Runnable() {
-            public void run() {
-                //DynamoDB calls go here
-                CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                        getApplicationContext(),
-                        "us-west-2:6a90e3bc-32d9-4eb3-83c1-0d19aa5906fa", // Identity Pool ID
-                        Regions.US_WEST_2 // Region
-                );
-
-
-                AmazonDynamoDBClient ddbClient = Region.getRegion(Regions.US_WEST_2) // CRUCIAL
-
-                        .createClient(
-                                AmazonDynamoDBClient.class,
-                                credentialsProvider,
-                                new ClientConfiguration()
-                        );
-
-                DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
-
-                TicketDetailsDb tkt = new TicketDetailsDb();
-                String trans_id = transaction_id + "";
-                tkt.setTrans_id(trans_id);
-                tkt.setTime_stamp("yess");
-                tkt.setValidity(100);
-                tkt.setPenalty(121212);
-
-                mapper.save(tkt);
-            }
-        };
-
-
-        Thread mythread = new Thread(runnable);
-        mythread.start();
-
+//        Runnable runnable = new Runnable() {
+//            public void run() {
+//                //DynamoDB calls go here
+//                CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+//                        getApplicationContext(),
+//                        "us-west-2:6a90e3bc-32d9-4eb3-83c1-0d19aa5906fa", // Identity Pool ID
+//                        Regions.US_WEST_2 // Region
+//                );
+//
+//
+//                AmazonDynamoDBClient ddbClient = Region.getRegion(Regions.US_WEST_2) // CRUCIAL
+//
+//                        .createClient(
+//                                AmazonDynamoDBClient.class,
+//                                credentialsProvider,
+//                                new ClientConfiguration()
+//                        );
+//
+//                DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+//
+//                TicketDetailsDb tkt = new TicketDetailsDb();
+//                String trans_id = transaction_id + "";
+//                tkt.setTrans_id(trans_id);
+//                tkt.setTime_stamp("yess");
+//                tkt.setValidity(100);
+//                tkt.setPenalty(121212);
+//
+//              //  mapper.save(tkt);
+//            }
+//        };
+//
+//
+//        Thread mythread = new Thread(runnable);
+//        mythread.start();
+//
         if (requestCode == BARCODE_READER_REQUEST_CODE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {

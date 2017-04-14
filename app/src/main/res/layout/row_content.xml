@@ -8,17 +8,17 @@
     <TextView
         android:id="@+id/tv1"
         android:text="TextView"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:textAppearance="?android:attr/textAppearanceLarge">
     </TextView>
 
     <TextView
         android:text="TextView"
         android:id="@+id/tv2"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:visibility="invisible"
-        android:layout_height="wrap_content">
+        android:layout_height="20dp">
     </TextView>
 
 </LinearLayout>
