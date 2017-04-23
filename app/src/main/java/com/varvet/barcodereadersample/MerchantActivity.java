@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Random;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -37,6 +39,11 @@ import static com.varvet.barcodereadersample.MainActivity.validity;
  **/
 
 public class MerchantActivity extends Activity {
+
+	private AlarmManager mAlarmManager;
+	private Intent mNotificationReceiverIntent, mLoggerReceiverIntent;
+	private PendingIntent mNotificationReceiverPendingIntent;
+	private long validityInMiliSec;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +141,14 @@ public class MerchantActivity extends Activity {
 
 						addTicketToAWS();
 
+						validityInMiliSec = Integer.parseInt(validity)*60*60*1000;
+						Log.e("validityInMiliSec: ",""+validityInMiliSec+"       <---- "+validity);
+
+						//setNextAlarm(validityInMiliSec,key);
+						//setNextAlarm(60*1000,key);   //1 Minute
+
+
+
 
 						startActivity(openMainActivity);
 
@@ -223,4 +238,36 @@ public class MerchantActivity extends Activity {
 		Log.e("Database status: ","succesfully entered");
 
 	}
+
+	public void setNextAlarm(long next_alarm,String key)
+	{
+		mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+		// Create an Intent to broadcast to the AlarmNotificationReceiver
+		mNotificationReceiverIntent = new Intent(MerchantActivity.this,
+				AlarmNotificationReceiver.class);
+
+		mNotificationReceiverIntent.putExtra("key",key);
+
+		Random randomGenerator = new Random();
+		int requestCode = randomGenerator.nextInt(100);  // 0 to 99
+		// Create an PendingIntent that holds the NotificationReceiverIntent
+		mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(
+				MerchantActivity.this, requestCode, mNotificationReceiverIntent, 0);
+
+
+		// Set single alarm
+
+
+		mAlarmManager.set(AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis() + next_alarm,
+				mNotificationReceiverPendingIntent);//UPGRADEABLE
+		// Show Toast message
+		Toast.makeText(getApplicationContext(), " Next alarm set .. ",
+				Toast.LENGTH_SHORT).show();
+
+		//-------------------------------------
+
+	}
+
 }

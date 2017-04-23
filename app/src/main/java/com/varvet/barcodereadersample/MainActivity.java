@@ -32,8 +32,11 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.varvet.barcodereadersample.barcode.BarcodeCaptureActivity;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
@@ -48,14 +51,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     ListView lview;
     ListViewAdapter lviewAdapter;
-
-    private final static String month[] = {"January","February","March","April","May",
-            "June","July","August","September","October","November","December"};
-
-    private final static String number[] = {"Month - 1", "Month - 2","Month - 3",
-            "Month - 4","Month - 5","Month - 6",
-            "Month - 7","Month - 8","Month - 9",
-            "Month - 10","Month - 11","Month - 12"};
 
     private final static ArrayList<String> lTitle = new ArrayList<String>();
     private final static ArrayList<String> lDescription = new ArrayList<String>();
@@ -95,34 +90,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
 
-        //------------------------ LIST VIEW--------------------------------------------------
-
-
-//        // Find the ListView resource.
-//        mainListView = (ListView) findViewById( R.id.mainListView );
-//
-//        // Create and populate a List of planet names.
-//        String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
-//                "Jupiter", "Saturn", "Uranus", "Neptune"};
-//        ArrayList<String> planetList = new ArrayList<String>();
-//        planetList.addAll( Arrays.asList(planets) );
-//
-//        // Create ArrayAdapter using the planet list.
-//        listAdapter = new ArrayAdapter<String>(this, R.layout.row_content, planetList);
-//
-//        // Add more planets. If you passed a String[] instead of a List<String>
-//        // into the ArrayAdapter constructor, you must not add more items.
-//        // Otherwise an exception will occur.
-//        listAdapter.add( "Ceres" );
-//        listAdapter.add( "Pluto" );
-//        listAdapter.add( "Haumea" );
-//        listAdapter.add( "Makemake" );
-//        listAdapter.add( "Eris" );
-//
-//        // Set the ArrayAdapter as the ListView's adapter.
-//        mainListView.setAdapter( listAdapter );
-        //------------------------ LIST VIEW--------------------------------------------------
-
         //------------------------ LIST VIEW2--------------------------------------------------
 
         Log.e("onCreate"," --------------------------------->>>>>>>>>>>>>>>>>>>>    called");
@@ -137,7 +104,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         SharedPreferences prefs = getSharedPreferences("TICKETMSP", MODE_PRIVATE);
         HashMap<String,String> h = (HashMap<String, String>) prefs.getAll();
-
+        Log.e("before",h.size()+"");
+        updateSharedPreference(prefs);
+        //new
+        h = (HashMap<String, String>) prefs.getAll();
+        Log.e("after",h.size()+"");
 
         lview = (ListView) findViewById(R.id.mainListView);
         //lviewAdapter = new ListViewAdapter(this, month, number);
@@ -146,11 +117,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         System.out.println("adapter => "+lviewAdapter.getCount());
 
         lviewAdapter.clear();           //to avoid repeated insert in list
-        for(String key : h.keySet())
+
+        //SORTING TICKETS BASED ON TYPES
+        ArrayList<String> sortedTickets = new ArrayList<String>();
+        for(String key:h.keySet())
+            sortedTickets.add(key);
+        Collections.sort(sortedTickets);
+
+
+        for(String key : sortedTickets)
         {
             String title = h.get(key);
             lviewAdapter.add(title,key);
         }
+
+
         lview.setAdapter(lviewAdapter);
 
         lview.setOnItemClickListener(this);
@@ -388,5 +369,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }Toast.makeText(this,tv.getText(),Toast.LENGTH_LONG);
 
 
+    }
+
+    public static void updateSharedPreference(SharedPreferences prefs)
+    {
+        HashMap<String,String> h = (HashMap<String, String>) prefs.getAll();
+        SharedPreferences.Editor editor = prefs.edit();
+        for(String key:h.keySet())
+        {
+            String s[] = key.split("&&");
+            String paymentTimeStamp =s[5];
+            String current = getCurrentSystemTime();
+            long minutes = elapsedTimeInMinutes(getCurrentSystemTime(),paymentTimeStamp);
+            int ValidityInMins  = Integer.parseInt(s[3]); //validity
+
+            Log.e("Expired?: ",(1.0*ValidityInMins - 1.0*minutes)+"");
+            if( (1.0*ValidityInMins - 1.0*minutes) > 0)
+            {
+
+               // let it be
+            }
+            else
+                editor.remove(key);
+
+
+        }
+        editor.commit();
+
+    }
+
+    public static String getCurrentSystemTime() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        return strDate;
+    }
+
+    public static long elapsedTimeInMinutes(String current, String paymentTimeStamp)
+    {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+        long diff=-1;
+        try {
+            Date date1 = format.parse(paymentTimeStamp);
+            Date date2 = format.parse(current);
+            diff = date2.getTime() - date1.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();        //EXCEPTION HANDLING FOR MALECIOUS QRCODES
+        }
+        return diff/(1000*60);
     }
 }
