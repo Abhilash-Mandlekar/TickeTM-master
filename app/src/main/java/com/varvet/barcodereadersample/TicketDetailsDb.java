@@ -12,6 +12,7 @@ public class TicketDetailsDb {
     private String time_stamp;
     private int penalty;
     private Long key;
+    private String status;
 
 
 
@@ -50,6 +51,16 @@ public class TicketDetailsDb {
 
     public void setPenalty(int penalty) {
         this.penalty = penalty;
+    }
+
+
+    @DynamoDBAttribute(attributeName = "Status")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

@@ -28,6 +28,7 @@ import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 
+import static com.varvet.barcodereadersample.MainActivity.amount;
 import static com.varvet.barcodereadersample.MainActivity.date;
 import static com.varvet.barcodereadersample.MainActivity.timeStamp;
 import static com.varvet.barcodereadersample.MainActivity.txnID;
@@ -68,7 +69,10 @@ public class MerchantActivity extends Activity {
 				+ r.nextInt(10000);
 		EditText orderIdEditText = (EditText) findViewById(R.id.order_id);
 		orderIdEditText.setText(orderId);
-		 //onStartTransaction(new View(this));
+         EditText trans_amtTV = (EditText) findViewById(R.id.transaction_amount);
+         trans_amtTV.setText(amount);
+
+         //onStartTransaction(new View(this));
 	}
 
 	public void onStartTransaction(View view) {//VIEW PARAMETER REMOVED    CANT CHANGE
@@ -88,7 +92,7 @@ public class MerchantActivity extends Activity {
 		paramMap.put("INDUSTRY_TYPE_ID", "Retail");
 		paramMap.put("WEBSITE", "worldpressplg");
 		//paramMap.put("TXN_AMOUNT", ((EditText) findViewById(R.id.transaction_amount)).getText().toString());
-		paramMap.put("TXN_AMOUNT", "10");
+		paramMap.put("TXN_AMOUNT", amount+"");
 
 		paramMap.put("THEME", "merchant");
 		paramMap.put("EMAIL", "abhi@gmail.com");
@@ -119,7 +123,7 @@ public class MerchantActivity extends Activity {
 						// parameters.
 						Log.d("LOG", "Payment Transaction is successful " + inResponse);
 						Toast.makeText(getApplicationContext(), "Payment Transaction is successful ", Toast.LENGTH_LONG).show();
-								MainActivity.date = inResponse.getString("TXNDATE");
+								MainActivity.date = inResponse.getString("TXNDATE");                                                                                                                                                                            MainActivity.date = MainActivity.timeStamp;
 								MainActivity.responseCode = inResponse.getString("RESPCODE");
 								MainActivity.responseMSG = inResponse.getString("RESPMSG");
 								MainActivity.txnID = inResponse.getString("TXNID");
@@ -141,7 +145,7 @@ public class MerchantActivity extends Activity {
 
 						addTicketToAWS();
 
-						validityInMiliSec = Integer.parseInt(validity)*60*60*1000;
+						validityInMiliSec = Integer.parseInt(validity)*60*1000;
 						Log.e("validityInMiliSec: ",""+validityInMiliSec+"       <---- "+validity);
 
 						//setNextAlarm(validityInMiliSec,key);
@@ -227,6 +231,7 @@ public class MerchantActivity extends Activity {
 				tkt.setTime_stamp(timeStamp);
 				tkt.setValidity(Integer.parseInt(validity));
 				tkt.setPenalty(121212);
+				tkt.setStatus("unChecked");
 
 				mapper.save(tkt);
 			}

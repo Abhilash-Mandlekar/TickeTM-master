@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private boolean paymentSuccessful = false;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
+     *
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
@@ -223,9 +224,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     validity = qr_code_data_parameters[3];
 
                     tv_service.setText(" Service Name                   : " + service);
-                    tv_accno.setText(" Account Number                 : " + account_no);
-                    tv_amt.setText(" Amount of Ticket (in Rs)       : " + amount);
-                    tv_validity.setText(" Validity of Ticket (in hrs)    : " + validity);
+                      tv_accno.setText(" Account Number                 : " + account_no);
+                        tv_amt.setText(" Amount of Ticket (in Rs)       : " + amount);
+                    tv_validity.setText(" Validity of Ticket (in mins)    : " + validity);
 
                     //button onclick
                     btn_pay.setOnClickListener(new View.OnClickListener() {
